@@ -62,34 +62,41 @@ const SearchBar = () => {
           value={selectedBooks}
           onChange={() => {}}
         >
-          {filteredBooks.map((book) => (
-            <MenuItem key={book.title} value={book} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <img src={book.coverPhotoURL} alt={book.title} style={{ width: '50px', marginRight: '10px' }} />
-              <Box sx={{ display:'flex', alignItems: 'center', flexGrow: 1 }}>
-                <ListItemText
-                  primary={book.title}
-                  secondary={book.author}
-                  sx={{ maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textWrap:'wrap' }}
-                />
-                <div style={{ marginLeft: '10px' }}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleAddBook(book)}
-                    sx={{
-                      borderRadius: '20px',
-                      bgcolor: '#5ACCCC',
-                      color: 'white',
-                      '&:hover': {
-                        bgcolor: '#4AB6B9',
-                      },
-                    }}
-                  >
-                    Add to List
-                  </Button>
-                </div>
-              </Box>
+          {filteredBooks.length === 0 ? (
+            <MenuItem disabled>
+              <Typography>No book with that title found
+              <br/>check if it is already in the reading list!</Typography>
             </MenuItem>
-          ))}
+          ) : (
+            filteredBooks.map((book) => (
+              <MenuItem key={book.title} value={book} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <img src={book.coverPhotoURL} alt={book.title} style={{ width: '50px', marginRight: '10px' }} />
+                <Box sx={{ display:'flex', alignItems: 'center', flexGrow: 1 }}>
+                  <ListItemText
+                    primary={book.title}
+                    secondary={book.author}
+                    sx={{ maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textWrap:'wrap' }}
+                  />
+                  <div style={{ marginLeft: '10px' }}>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleAddBook(book)}
+                      sx={{
+                        borderRadius: '20px',
+                        bgcolor: '#5ACCCC',
+                        color: 'white',
+                        '&:hover': {
+                          bgcolor: '#4AB6B9',
+                        },
+                      }}
+                    >
+                      Add to List
+                    </Button>
+                  </div>
+                </Box>
+              </MenuItem>
+            ))
+          )}
         </Select>
       </FormControl>
       <Modal
