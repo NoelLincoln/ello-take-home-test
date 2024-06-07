@@ -13,7 +13,7 @@ const SearchBar = () => {
   };
 
   return (
-    <Box display="flex" width="100%" justifyContent="center" paddingTop={2} overflow="visible">
+    <Box display="flex" width="100%" justifyContent="center" paddingTop={2} paddingBottom={2} overflow="visible">
       <Box
         display="flex"
         alignItems="center"
