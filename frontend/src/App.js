@@ -1,18 +1,23 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import BookList from './components/BookList';
-
+import ReadingList from './components/ReadingList';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-      <Header/>
-      </header>
-      <SearchBar/>
-      <BookList/>
-    </div>
+    <Router>
+      <div className="App">
+        <Header />
+        <Routes>
+          <Route path="/" element={<><SearchBar /><BookList /></>} />
+          <Route path="/home" element={<><SearchBar /><BookList /></>} />
+          <Route path="/readinglist" element={<ReadingList />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
