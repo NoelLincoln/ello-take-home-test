@@ -49,18 +49,20 @@ const SearchBar = () => {
       <TextField
         label="Filter by title"
         variant="outlined"
+        placeholder="Type parts of the title, click the dropdown below"
         value={searchText}
         onChange={handleSearchChange}
         style={{ marginBottom: '16px', width: '80%' }}
       />
       <FormControl style={{ minWidth: '200px', width: '80%', marginBottom: '2em', marginTop: '1em' }}>
-        <InputLabel id="select-multiple-label" shrink>Click to select Books</InputLabel>
+        <InputLabel id="select-multiple-label" shrink></InputLabel>
         <Select
           labelId="select-multiple-label"
           id="select-multiple"
           multiple
           value={selectedBooks}
           onChange={() => {}}
+          renderValue={() => 'Click to select Books'}
         >
           {filteredBooks.length === 0 ? (
             <MenuItem disabled>
