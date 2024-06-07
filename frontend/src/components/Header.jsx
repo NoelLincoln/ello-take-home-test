@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../logo.svg';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -32,8 +33,8 @@ const Header = () => {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {['About', 'Services', 'Contact Us'].map((text) => (
-          <ListItem button key={text}>
+        {['Home','Reading List'].map((text) => (
+          <ListItem button key={text} component={Link} to={`/${text.replace(/\s+/g, '').toLowerCase()}`}>
             <ListItemText primary={text} />
           </ListItem>
         ))}
@@ -43,7 +44,7 @@ const Header = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ backgroundColor: '#f0f0f0', color: '#333', top: 0, zIndex: 999}}>
+      <AppBar position="fixed" sx={{ backgroundColor: '#f0f0f0', color: '#333', top: 0, zIndex: 999 }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <img src={logo} alt="logo" style={{ height: '40px' }} />
           {isSmallScreen ? (
@@ -68,9 +69,8 @@ const Header = () => {
             </>
           ) : (
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button color="inherit">About</Button>
-              <Button color="inherit">Services</Button>
-              <Button color="inherit">Contact Us</Button>
+              <Button color="inherit" component={Link} to="/">Home</Button>
+              <Button color="inherit" component={Link} to="/readinglist">Reading List</Button>
             </Box>
           )}
         </Toolbar>
