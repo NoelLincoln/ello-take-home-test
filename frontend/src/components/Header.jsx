@@ -43,7 +43,7 @@ const Header = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: '#f0f0f0', color: '#333' }}>
+      <AppBar position="fixed" sx={{ backgroundColor: '#f0f0f0', color: '#333', top: 0, zIndex: 999}}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <img src={logo} alt="logo" style={{ height: '40px' }} />
           {isSmallScreen ? (
