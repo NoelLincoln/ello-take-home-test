@@ -69,8 +69,23 @@ const Header = () => {
             </>
           ) : (
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button color="inherit" component={Link} to="/">Home</Button>
-              <Button color="inherit" component={Link} to="/readinglist">Reading List</Button>
+              <Button component={Link} to="/"
+                sx={{ 
+                color: '#5ACCCC',
+                '&:hover': {
+                    color: '#335C6E',
+                    },
+                    }}>Home 
+                </Button>
+
+              <Button component={Link} to="/readinglist"
+              sx={{ 
+                color: '#5ACCCC',
+                '&:hover': {
+                    color: '#335C6E',
+                    },
+                    }}>Reading List
+              </Button>
             </Box>
           )}
         </Toolbar>

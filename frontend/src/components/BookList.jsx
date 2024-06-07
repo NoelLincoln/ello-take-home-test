@@ -25,7 +25,7 @@ const BookList = () => {
 
   return (
     <>
-    <Typography variant="h4" align="center" gutterBottom>List of all Books</Typography>
+    <Typography variant="h4" align="center" gutterBottom sx={{ color: '#5ACCCC' }}>List of all Books</Typography>
     <Grid container spacing={2} justifyContent="center" sx={{ mx: 'auto', width: '80%' }}>
       {sortedBooks.map(book => (
         <Grid key={book.title} item xs={12} sm={6} md={4} lg={3}>

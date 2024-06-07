@@ -43,7 +43,9 @@ const SearchBar = () => {
     .filter(book => !selectedBooks.some(selectedBook => selectedBook.title === book.title));
 
   return (
+    <>
     <Box display="flex" flexDirection="column" alignItems="center" paddingTop={12}>
+    <Typography variant="h4" align="center" gutterBottom sx={{ color: '#5ACCCC' }}>Search For Your Favorite Books!</Typography>
       <TextField
         label="Filter by title"
         variant="outlined"
@@ -52,7 +54,7 @@ const SearchBar = () => {
         style={{ marginBottom: '16px', width: '80%' }}
       />
       <FormControl style={{ minWidth: '200px', width: '80%', marginBottom: '2em', marginTop: '1em' }}>
-        <InputLabel id="select-multiple-label" shrink>Select Books</InputLabel>
+        <InputLabel id="select-multiple-label" shrink>Click to select Books</InputLabel>
         <Select
           labelId="select-multiple-label"
           id="select-multiple"
@@ -116,6 +118,7 @@ const SearchBar = () => {
         </Box>
       </Modal>
     </Box>
+    </> 
   );
 };
 
