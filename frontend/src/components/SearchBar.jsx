@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, MenuItem, FormControl, InputLabel, Select, TextField, Typography, Button, ListItemText, Modal, IconButton } from '@mui/material';
+import { Box, MenuItem, FormControl, InputLabel, Select, TextField, Typography, Button, ListItemText, Modal, CircularProgress, IconButton } from '@mui/material';
+import { useLazyQuery } from '@apollo/client';
 import CloseIcon from '@mui/icons-material/Close';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useLazyQuery } from '@apollo/client';
-import { GET_ALL_BOOKS } from '../utils/queries';
+import { GET_ALL_BOOKS_SEARCH } from '../utils/queries';
 
 const SearchBar = () => {
   const [searchText, setSearchText] = useState('');
@@ -13,23 +13,34 @@ const SearchBar = () => {
     return savedBooks ? JSON.parse(savedBooks) : [];
   });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false); // State to control the select menu
-  const [offset, setOffset] = useState(0);
-  const limit = 10; // Number of books to fetch at once
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const [fetchBooks] = useLazyQuery(GET_ALL_BOOKS, {
-    onCompleted: (data) => {
-      const sortedBooks = data.books.slice().sort((a, b) => a.title.localeCompare(b.title));
-      setBooks((prevBooks) => [...prevBooks, ...sortedBooks]);
-    },
-  });
+  const [fetchBooks, { loading, data }] = useLazyQuery(GET_ALL_BOOKS_SEARCH);
 
   useEffect(() => {
-    fetchBooks({ variables: { offset, limit } });
-  }, [fetchBooks, offset, limit]);
+    if (data && !loading) {
+      const filteredBooks = data.books_search.filter(
+        book => !selectedBooks.some(selectedBook => selectedBook.title === book.title)
+      );
+      setBooks(filteredBooks);
+    }
+  }, [data, loading, selectedBooks]);
+
+  const handleSearchFieldClick = () => {
+    fetchBooks();
+  };
 
   const handleSearchChange = (event) => {
     setSearchText(event.target.value);
+  };
+
+  const handleMenuOpen = () => {
+    setMenuOpen(true);
+    handleSearchFieldClick();
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
   };
 
   const handleAddBook = (book) => {
@@ -39,24 +50,13 @@ const SearchBar = () => {
     setShowSuccessModal(true);
     setTimeout(() => {
       setShowSuccessModal(false);
-    }, 2000);
+    }, 3000);
+
+    // Remove the added book from the books list
+    setBooks(prevBooks => prevBooks.filter(b => b.title !== book.title));
   };
 
-  const handleMenuOpen = () => {
-    setMenuOpen(true);
-  };
-
-  const handleMenuClose = () => {
-    setMenuOpen(false);
-  };
-
-  const filteredBooks = books
-    .filter(book => book.title.toLowerCase().includes(searchText.toLowerCase()))
-    .filter(book => !selectedBooks.some(selectedBook => selectedBook.title === book.title));
-
-  const fetchMoreBooks = () => {
-    setOffset((prevOffset) => prevOffset + limit);
-  };
+  const filteredBooks = books.filter(book => book.title.toLowerCase().includes(searchText.toLowerCase()));
 
   return (
     <>
@@ -82,7 +82,7 @@ const SearchBar = () => {
             onOpen={handleMenuOpen}
             onClose={handleMenuClose}
             open={menuOpen}
-            renderValue={() => 'Click to select Books'}
+            renderValue={() => (loading ? <CircularProgress size={24} /> : 'Click to select Books')}
           >
             <MenuItem>
               <Typography variant="h6" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
@@ -92,20 +92,24 @@ const SearchBar = () => {
                 </IconButton>
               </Typography>
             </MenuItem>
-            <InfiniteScroll
-              dataLength={filteredBooks.length}
-              next={fetchMoreBooks}
-              hasMore={filteredBooks.length === limit}
-              loader={<h4>Loading...</h4>}
-              endMessage={<p style={{ textAlign: 'center' }}>No more books to load</p>}
-            >
-              {filteredBooks.length === 0 ? (
-                <MenuItem disabled>
-                  <Typography>No book with that title found
-                    <br />check if it is already in the reading list!</Typography>
-                </MenuItem>
-              ) : (
-                filteredBooks.map((book) => (
+            {loading ? (
+              <MenuItem disabled>
+                <CircularProgress size={24} />
+              </MenuItem>
+            ) : filteredBooks.length === 0 ? (
+              <MenuItem disabled>
+                <Typography>No book with that title found
+                  <br />check if it is already in the reading list!</Typography>
+              </MenuItem>
+            ) : (
+              <InfiniteScroll
+                dataLength={filteredBooks.length}
+                next={fetchBooks}
+                hasMore={filteredBooks.length === 10}
+                loader={<MenuItem disabled><CircularProgress size={24} /></MenuItem>}
+                endMessage={<MenuItem disabled><Typography>No more books to load</Typography></MenuItem>}
+              >
+                {filteredBooks.map((book) => (
                   <MenuItem key={book.title} value={book} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '60%' }}>
                     <img src={book.coverPhotoURL} alt={book.title} style={{ width: '50px', marginRight: '10px' }} />
                     <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
@@ -132,9 +136,9 @@ const SearchBar = () => {
                       </div>
                     </Box>
                   </MenuItem>
-                ))
-              )}
-            </InfiniteScroll>
+                ))}
+              </InfiniteScroll>
+            )}
           </Select>
         </FormControl>
         <Modal
