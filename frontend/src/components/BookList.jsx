@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { GET_ALL_BOOKS } from '../utils/queries';
 
@@ -51,8 +51,16 @@ const BookList = () => {
         dataLength={books.length}
         next={fetchMoreBooks}
         hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
-        endMessage={<p>No more books to load</p>}
+        loader={
+          <Box sx={{ my: 2, textAlign: 'center', fontStyle: 'italic', color: '#FAAD00' }}>
+            Loading...
+          </Box>
+        }
+        endMessage={
+          <Box sx={{ my: 2, textAlign: 'center', fontStyle: 'italic', color: '#FAAD00' }}>
+            No more books to load
+          </Box>
+        }
         scrollThreshold={0.9}
       >
         <Grid container spacing={2} justifyContent="center" sx={{ mx: 'auto', width: '80%' }}>
