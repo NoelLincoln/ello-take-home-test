@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Typography, Link } from '@mui/material';
+import { Box, Typography, Link, Button } from '@mui/material';
+import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
 
 const Footer = () => {
   return (
@@ -22,6 +23,11 @@ const Footer = () => {
           noellincoln.github.io
         </Link>
       </Typography>
+      {/* Scroll to Top Button */}
+      <Button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+      scroll to top
+      <ArrowUpwardOutlinedIcon/>
+    </Button>
     </Box>
   );
 };
