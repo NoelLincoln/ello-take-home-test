@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, MenuItem, FormControl, InputLabel, Select, TextField, Typography, Button, ListItemText, Modal, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { useLazyQuery } from '@apollo/client';
-import { GET_ALL_BOOKS } from '../utils/queries'; // Import the query for fetching books
+import { GET_ALL_BOOKS } from '../utils/queries';
 
 const SearchBar = () => {
   const [searchText, setSearchText] = useState('');
@@ -13,18 +14,19 @@ const SearchBar = () => {
   });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // State to control the select menu
+  const [offset, setOffset] = useState(0);
+  const limit = 10; // Number of books to fetch at once
 
   const [fetchBooks] = useLazyQuery(GET_ALL_BOOKS, {
     onCompleted: (data) => {
-      // Sort books alphabetically by title
       const sortedBooks = data.books.slice().sort((a, b) => a.title.localeCompare(b.title));
-      setBooks(sortedBooks);
+      setBooks((prevBooks) => [...prevBooks, ...sortedBooks]);
     },
   });
 
   useEffect(() => {
-    fetchBooks();
-  }, [fetchBooks]);
+    fetchBooks({ variables: { offset, limit } });
+  }, [fetchBooks, offset, limit]);
 
   const handleSearchChange = (event) => {
     setSearchText(event.target.value);
@@ -44,13 +46,17 @@ const SearchBar = () => {
     setMenuOpen(true);
   };
 
-  const handleMenuClose = (event) => {
+  const handleMenuClose = () => {
     setMenuOpen(false);
   };
 
   const filteredBooks = books
     .filter(book => book.title.toLowerCase().includes(searchText.toLowerCase()))
     .filter(book => !selectedBooks.some(selectedBook => selectedBook.title === book.title));
+
+  const fetchMoreBooks = () => {
+    setOffset((prevOffset) => prevOffset + limit);
+  };
 
   return (
     <>
@@ -86,41 +92,49 @@ const SearchBar = () => {
                 </IconButton>
               </Typography>
             </MenuItem>
-            {filteredBooks.length === 0 ? (
-              <MenuItem disabled>
-                <Typography>No book with that title found
-                  <br />check if it is already in the reading list!</Typography>
-              </MenuItem>
-            ) : (
-              filteredBooks.map((book) => (
-                <MenuItem key={book.title} value={book} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '60%' }}>
-                  <img src={book.coverPhotoURL} alt={book.title} style={{ width: '50px', marginRight: '10px' }} />
-                  <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                    <ListItemText
-                      primary={book.title}
-                      secondary={book.author}
-                      sx={{ maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textWrap: 'wrap' }}
-                    />
-                    <div style={{ marginLeft: '10px' }}>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleAddBook(book)}
-                        sx={{
-                          borderRadius: '20px',
-                          bgcolor: '#5ACCCC',
-                          color: 'white',
-                          '&:hover': {
-                            bgcolor: '#4AB6B9',
-                          },
-                        }}
-                      >
-                        Add to List
-                      </Button>
-                    </div>
-                  </Box>
+            <InfiniteScroll
+              dataLength={filteredBooks.length}
+              next={fetchMoreBooks}
+              hasMore={filteredBooks.length === limit}
+              loader={<h4>Loading...</h4>}
+              endMessage={<p style={{ textAlign: 'center' }}>No more books to load</p>}
+            >
+              {filteredBooks.length === 0 ? (
+                <MenuItem disabled>
+                  <Typography>No book with that title found
+                    <br />check if it is already in the reading list!</Typography>
                 </MenuItem>
-              ))
-            )}
+              ) : (
+                filteredBooks.map((book) => (
+                  <MenuItem key={book.title} value={book} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '60%' }}>
+                    <img src={book.coverPhotoURL} alt={book.title} style={{ width: '50px', marginRight: '10px' }} />
+                    <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                      <ListItemText
+                        primary={book.title}
+                        secondary={book.author}
+                        sx={{ maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textWrap: 'wrap' }}
+                      />
+                      <div style={{ marginLeft: '10px' }}>
+                        <Button
+                          variant="contained"
+                          onClick={() => handleAddBook(book)}
+                          sx={{
+                            borderRadius: '20px',
+                            bgcolor: '#5ACCCC',
+                            color: 'white',
+                            '&:hover': {
+                              bgcolor: '#4AB6B9',
+                            },
+                          }}
+                        >
+                          Add to List
+                        </Button>
+                      </div>
+                    </Box>
+                  </MenuItem>
+                ))
+              )}
+            </InfiniteScroll>
           </Select>
         </FormControl>
         <Modal
