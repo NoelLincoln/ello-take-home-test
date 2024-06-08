@@ -9,3 +9,13 @@ export const GET_ALL_BOOKS = gql`
     }
   }
 `;
+
+export const GET_ALL_BOOKS_SEARCH = gql`
+  query GetAllBooksSearch{
+    books_search {
+      title
+      author
+      coverPhotoURL
+    }
+  }
+`;
