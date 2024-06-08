@@ -1,21 +1,12 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
+import { GET_ALL_BOOKS } from '../utils/queries';
 
-const GET_BOOKS = gql`
-  query ExampleQuery {
-    books {
-      author
-      coverPhotoURL
-      readingLevel
-      title
-    }
-  }
-`;
 
 const BookList = () => {
-  const { loading, error, data } = useQuery(GET_BOOKS);
+  const { loading, error, data } = useQuery(GET_ALL_BOOKS);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error! ${error.message}</div>;
