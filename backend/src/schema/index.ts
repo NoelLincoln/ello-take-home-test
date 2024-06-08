@@ -9,5 +9,6 @@ export const typeDefs = `#graphql
 
   type Query {
     books(offset: Int, limit: Int): [Book]
+    books_search: [Book]
   }
 `;
