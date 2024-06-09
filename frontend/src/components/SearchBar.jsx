@@ -6,23 +6,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import { GET_ALL_BOOKS_SEARCH } from '../utils/queries';
 
-const cardHeaderStyles = {
-    wrapper: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '16px',
-    },
-    addBookToListButton: {
-        marginLeft: '16px',
-        bgcolor: '#5ACCCC',
-        color: 'white',
-        '&:hover': {
-            bgcolor: '#4AB6B9',
-        },
-    },
-};
-
 const SearchBarComponent = () => {
     const [state, setState] = useState({ dataSource: [] });
     const [books, setBooks] = useState([]);
@@ -94,7 +77,13 @@ const SearchBarComponent = () => {
                     variant="contained"
                     onClick={handleSearchRequest}
                     size="large"
-                    sx={cardHeaderStyles.addBookToListButton}
+                    sx={{ marginLeft: '16px',
+                          bgcolor: '#5ACCCC',
+                          color: 'white',
+                          '&:hover': {
+                            bgcolor: '#4AB6B9',
+                            },
+                    }}
                 >
                     Search
                 </Button>
@@ -203,7 +192,7 @@ const SearchBarComponent = () => {
                         p: 4,
                         borderRadius: '8px',
                         textAlign: 'center',
-                        color: 'black',
+                        color: '#FFF',
                     }}
                 >
                     <Typography variant="h5" id="duplicate-book-modal">

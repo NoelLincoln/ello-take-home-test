@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import './App.css';
 import Header from './components/Header';
-import SearchBarComponent from './components/SearchBarComponent';
+import SearchBar from './components/SearchBar';
 import BookList from './components/BookList';
 import ReadingList from './components/ReadingList';
 import Footer from './components/Footer';
-import { GET_ALL_BOOKS, GET_ALL_BOOKS_SEARCH } from './utils/queries';
+import { GET_ALL_BOOKS } from './utils/queries';
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -54,8 +54,8 @@ function App() {
       <div className="App">
         <Header />
         <Routes>
-          <Route path="/" element={<><SearchBarComponent /><BookList books={books} fetchMoreBooks={fetchMoreBooks} hasMore={books.length % limit === 0} /></>} />
-          <Route path="/home" element={<><SearchBarComponent /><BookList books={books} fetchMoreBooks={fetchMoreBooks} hasMore={books.length % limit === 0} /></>} />
+          <Route path="/" element={<><SearchBar/><BookList books={books} fetchMoreBooks={fetchMoreBooks} hasMore={books.length % limit === 0} /></>} />
+          <Route path="/home" element={<><SearchBar/><BookList books={books} fetchMoreBooks={fetchMoreBooks} hasMore={books.length % limit === 0} /></>} />
           <Route path="/readinglist" element={<ReadingList />} />
         </Routes>
         <Footer />
