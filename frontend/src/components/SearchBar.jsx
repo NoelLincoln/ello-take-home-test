@@ -120,7 +120,7 @@ const SearchBarComponent = () => {
                     >
                         {filteredBooks.map((book) => (
                             <Box key={book.title} sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', flexGrow: 1, minWidth: '200px', flexBasis: '200px', marginBottom: '1rem' }}>
-                                <img src={book.coverPhotoURL} alt={book.title} style={{ width: '50px', marginRight: '10px' }} />
+                                <img src={book.coverPhotoURL} alt={book.title} style={{ width: '100px', marginRight: '10px' }} />
                                 <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', flexGrow: 1 }}>
                                     <ListItemText
                                         primary={book.title}
