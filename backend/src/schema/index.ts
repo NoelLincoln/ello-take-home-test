@@ -1,12 +1,14 @@
 export const typeDefs = `#graphql
+  scalar Int
+
   type Book {
     title: String
     author: String
     coverPhotoURL: String
-    readingLevel: String
   }
 
   type Query {
-    books: [Book]
+    books(offset: Int, limit: Int): [Book]
+    books_search: [Book]
   }
 `;
