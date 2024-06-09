@@ -1,47 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import React from 'react';
 import Grid from '@mui/material/Grid';
 import { Typography, Box } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { GET_ALL_BOOKS } from '../utils/queries';
 
-const BookList = () => {
-  const [books, setBooks] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const limit = 12; // Number of books to fetch at once
-
-  const { loading, error, data, fetchMore } = useQuery(GET_ALL_BOOKS, {
-    variables: { offset, limit },
-    notifyOnNetworkStatusChange: true, // Ensures the query updates its loading status when `fetchMore` is called
-  });
-
-  useEffect(() => {
-    if (data && !loading) {
-      const newBooks = data.books;
-      setBooks(prevBooks => [...prevBooks, ...newBooks]);
-      setHasMore(newBooks.length === limit);
-    }
-  }, [data, loading]);
-
-  const fetchMoreBooks = () => {
-    if (hasMore) {
-      fetchMore({
-        variables: {
-          offset: offset + limit,
-          limit,
-        },
-      }).then(({ data }) => {
-        const newBooks = data.books;
-        setBooks(prevBooks => [...prevBooks, ...newBooks]);
-        setHasMore(newBooks.length === limit);
-        setOffset(prevOffset => prevOffset + limit);
-      });
-    }
-  };
-
-  if (error) return <div>Error! {error.message}</div>;
-
+const BookList = ({ books, fetchMoreBooks, hasMore, loading }) => {
   return (
     <>
       <Typography variant="h4" align="center" gutterBottom sx={{ color: '#5ACCCC' }}>
