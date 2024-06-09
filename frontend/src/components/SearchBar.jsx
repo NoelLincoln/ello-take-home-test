@@ -13,18 +13,16 @@ const SearchBar = () => {
     return savedBooks ? JSON.parse(savedBooks) : [];
   });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [fetchBooks, { loading, data }] = useLazyQuery(GET_ALL_BOOKS_SEARCH);
 
   useEffect(() => {
     if (data && !loading) {
-      const filteredBooks = data.books_search.filter(
-        book => !selectedBooks.some(selectedBook => selectedBook.title === book.title)
-      );
-      setBooks(filteredBooks);
+      setBooks(data.books_search);
     }
-  }, [data, loading, selectedBooks]);
+  }, [data, loading]);
 
   const handleSearchFieldClick = () => {
     fetchBooks();
@@ -44,16 +42,22 @@ const SearchBar = () => {
   };
 
   const handleAddBook = (book) => {
-    const updatedBooks = [...selectedBooks, book];
-    setSelectedBooks(updatedBooks);
-    localStorage.setItem('selectedBooks', JSON.stringify(updatedBooks));
-    setShowSuccessModal(true);
-    setTimeout(() => {
-      setShowSuccessModal(false);
-    }, 3000);
+    const isBookAlreadySelected = selectedBooks.some(selectedBook => selectedBook.title === book.title);
 
-    // Remove the added book from the books list
-    setBooks(prevBooks => prevBooks.filter(b => b.title !== book.title));
+    if (isBookAlreadySelected) {
+      setShowDuplicateModal(true);
+      setTimeout(() => {
+        setShowDuplicateModal(false);
+      }, 3000);
+    } else {
+      const updatedBooks = [...selectedBooks, book];
+      setSelectedBooks(updatedBooks);
+      localStorage.setItem('selectedBooks', JSON.stringify(updatedBooks));
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+      }, 3000);
+    }
   };
 
   const filteredBooks = books.filter(book => book.title.toLowerCase().includes(searchText.toLowerCase()));
@@ -163,6 +167,31 @@ const SearchBar = () => {
           >
             <Typography variant="h5" id="successfully-added-modal">
               Successfully Added!
+            </Typography>
+          </Box>
+        </Modal>
+        <Modal
+          open={showDuplicateModal}
+          onClose={() => setShowDuplicateModal(false)}
+          aria-labelledby="duplicate-book-modal"
+          aria-describedby="duplicate-book-message"
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              bgcolor: '#FAAD00',
+              boxShadow: 24,
+              p: 4,
+              borderRadius: '8px',
+              textAlign: 'center',
+              color: '#FFF',
+            }}
+          >
+            <Typography variant="h5" id="duplicate-book-modal">
+              Book is already in the reading list!
             </Typography>
           </Box>
         </Modal>
